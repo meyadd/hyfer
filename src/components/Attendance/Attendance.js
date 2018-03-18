@@ -1,5 +1,6 @@
 import React from 'react';
 import StudentWithWeeks from './StudentWithWeeks';
+import WeekIndicator from './WeekIndicator';
 import styles from '../../assets/styles/attendance.css';
 import Notifications, {notify} from 'react-notify-toast';
 import {
@@ -22,7 +23,6 @@ export default class Attendance extends React.Component{
 
     // Subscribing to the module info store for getting "history"
     componentDidMount = () => {
-
         // gtting data when component is mounted
         moduleInfoStore.subscribe(mergedData => {
             if (mergedData.type === HISTORY_CHANGED) {
@@ -56,7 +56,7 @@ export default class Attendance extends React.Component{
         if (repoName === "NOREPO") {
             content = (<h2 className={styles.message}>Oops! there is no History.</h2>)
         } else if (students === null || repoName === undefined) {
-            content = (<h2 className={styles.message}>please choose a module</h2>)
+            content = (<h2 className={styles.message}>Please choose a module</h2>)
         } else if (students.length === 0 ){
             content = (<h2 className={styles.message}>There is no student in this class.</h2>)
         } else {
@@ -66,65 +66,41 @@ export default class Attendance extends React.Component{
                 <div className={styles.AttendantName}>
                     <h3>{student}</h3>
                 </div>
-                <StudentWithWeeks 
-                allHistory={history}
-                duration={duration}
-                onChange={(event) => { this.handleCheckboxChange( student, event )}}
-                student={student}
-                students={students}
-                />
+                <div className={styles.checkboxes}>
+                    <StudentWithWeeks 
+                    allHistory={history}
+                    duration={duration}
+                    onChange={(event) => { this.handleCheckboxChange( student, event )}}
+                    student={student}
+                    students={students}
+                    />
+                </div>
             </div>)
             )
 
             title = (
                 <div className={styles.Title}>
-                    <h3>Attendance in {group_name} of {repoName}</h3>
+                    <h3 className={styles.Title_inner}>Attendance - {repoName.charAt(0).toUpperCase() + repoName.slice(1)}</h3>
                 </div>
             )
-
+    
             buttons = (
                 <div className={styles.buttons} >
-                    <button className={styles.button}
-                     disabled={!this.state.edit_Mode}
-                     name="save"
-                     onClick={this.onSave}
-                    >
-                    <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px"
-                    viewBox="0 0 49 49" >
-                    <rect x="27.5" y="5" width="6" height="10"/>
-                    <path d="M39.914,0H0.5v49h48V8.586L39.914,0z M10.5,2h26v16h-26V2z M39.5,47h-31V26h31V47z"/>
-                    <path d="M13.5,32h7c0.553,0,1-0.447,1-1s-0.447-1-1-1h-7c-0.553,0-1,0.447-1,1S12.947,32,13.5,32z"/>
-                    <path d="M13.5,36h10c0.553,0,1-0.447,1-1s-0.447-1-1-1h-10c-0.553,0-1,0.447-1,1S12.947,36,13.5,36z"/>
-                    <path d="M26.5,36c0.27,0,0.52-0.11,0.71-0.29c0.18-0.19,0.29-0.45,0.29-0.71s-0.11-0.521-0.29-0.71c-0.37-0.37-1.04-0.37-1.41,0
-                       c-0.19,0.189-0.3,0.439-0.3,0.71c0,0.27,0.109,0.52,0.29,0.71C25.979,35.89,26.229,36,26.5,36z"/>
-                    </svg></button>
-
-                    <button className={styles.button}
-                     disabled={!this.state.edit_Mode}
-                     name="cancel"
-                     onClick={this.undo}
-                    >
-                    <svg  x="0px" y="0px" viewBox="0 0 512 512" >
-                        <path d="M142.716,293.147l-94-107.602l94-107.602c7.596-8.705,6.71-21.924-1.995-29.527c-8.705-7.596-21.917-6.703-29.527,1.995
-			            L5.169,171.782c-6.892,7.882-6.892,19.65,0,27.532l106.026,121.372c4.143,4.729,9.94,7.157,15.771,7.157
-			            c4.883,0,9.786-1.702,13.755-5.169C149.427,315.071,150.319,301.852,142.716,293.147z"/>
-		                <path d="M359.93,164.619H20.926C9.368,164.619,0,173.986,0,185.545c0,11.558,9.368,20.926,20.926,20.926H359.93
-			            c60.776,0,110.218,49.441,110.218,110.211S420.706,426.893,359.93,426.893H48.828c-11.558,0-20.926,9.368-20.926,20.926
-			            c0,11.558,9.368,20.926,20.926,20.926H359.93c83.844,0,152.07-68.219,152.07-152.063S443.781,164.619,359.93,164.619z"/>
-                    </svg></button>
-
-                    <button className={styles.button}
-                     disabled={!this.state.edit_Mode}
-                     name="cancel"
-                     onClick={this.onCancel}
-                    >
-                    <svg  x="0px" y="0px" viewBox="0 0 51.976 51.976">
-	                    <path d="M44.373,7.603c-10.137-10.137-26.632-10.138-36.77,0c-10.138,10.138-10.137,26.632,0,36.77s26.632,10.138,36.77,0
-		                C54.51,34.235,54.51,17.74,44.373,7.603z M36.241,36.241c-0.781,0.781-2.047,0.781-2.828,0l-7.425-7.425l-7.778,7.778
-		                c-0.781,0.781-2.047,0.781-2.828,0c-0.781-0.781-0.781-2.047,0-2.828l7.778-7.778l-7.425-7.425c-0.781-0.781-0.781-2.048,0-2.828
-		                c0.781-0.781,2.047-0.781,2.828,0l7.425,7.425l7.071-7.071c0.781-0.781,2.047-0.781,2.828,0c0.781,0.781,0.781,2.047,0,2.828
-		                l-7.071,7.071l7.425,7.425C37.022,34.194,37.022,35.46,36.241,36.241z"/>
-                    </svg></button>
+                    <button className={styles.button_save}
+                        disabled={!this.state.edit_Mode}
+                        name="save"
+                        onClick={this.onSave}
+                    >Save</button>
+                    <button className={styles.button_undo}
+                        disabled={!this.state.edit_Mode}
+                        name="undo"
+                        onClick={this.undo}
+                    >Undo</button>
+                    <button className={styles.button_cancel}
+                        disabled={!this.state.edit_Mode}
+                        name="cancel"
+                        onClick={this.onCancel}
+                    >Cancel</button>
                 </div>
             )
         };
@@ -132,31 +108,39 @@ export default class Attendance extends React.Component{
         return(
             <div>
                 {title}
-                {content}
-                {buttons}
+                <div className={styles.wrapper}>
+                    <div className={styles.group_name}>
+                        <h3 className={styles.group_name_inner}>{group_name}</h3>
+                        <WeekIndicator
+                        duration={duration}
+                        students={students}
+                        history={history}
+                        repoName={repoName}
+                        />
+                    </div>
+                    <div className={styles.content_wrapper}>
+                        {content}
+                    </div>
+                    {buttons}
+                </div>
                 <Notifications />
             </div>
         )
     };
 
     handleCheckboxChange = ( student, event ) => {
-
         const week = event.target.id;
         const name = event.target.name; //attendance or homework
         // edit_mode will active the save and cancel buttons
         this.setState({
             edit_Mode : true,
         })
-
         stack.push(student, week, name);
-
         this.makeChange(student, week, name);
     }
 
     makeChange = (student, week, name) => {
-
         const { history } = this.state;
-    
         const changeValue=(v)=>{
             if (v === 0) {
                 return 1
@@ -164,20 +148,16 @@ export default class Attendance extends React.Component{
                 return 0
             }
         };
-
         // change in history object
         history[student][week][name] = changeValue(history[student][week][name])
-
         this.setState({
             history: history,
         })
     };
 
     onSave = () => {
-
         const body = this.state.history;
         let BASE_URL = 'http://localhost:3005/api/history';
-
         fetch(BASE_URL , {
             method: 'POST', 
             body: JSON.stringify(body),
@@ -188,17 +168,16 @@ export default class Attendance extends React.Component{
         .then(response => response.json())
         .then(notify.show('Your changes are successfully Saved !', 'success'))
         .catch(err => console.log(err))
-
         this.setState({
             edit_Mode: null,
         }) 
     };
 
     onCancel = () => {
-
         for (let i = 0; i < stack.length; i++) { 
             this.undo();
         };
+        notify.show('Your changes have been cancelled !', 'warning');
     }
 
     undo = () => {
@@ -207,7 +186,6 @@ export default class Attendance extends React.Component{
         const student = toUndo[0];
         const week = toUndo[1];
         const name = toUndo[2];
-
         if ( stack.length === 0 ) {
             this.setState({
                 edit_Mode: null,
